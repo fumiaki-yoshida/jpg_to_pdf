@@ -1,4 +1,4 @@
-# pdf_ocr
+# pdf_ocrjpg_to_pdf
 
 ## Overview
 
