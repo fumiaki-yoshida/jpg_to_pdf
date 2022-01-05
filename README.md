@@ -21,9 +21,15 @@ pdf化したいフォルダを聞かれるので相対パスで入力する。
 
 ## Feature
 
-## Reference
+## Preparation
 
-[tessaract](https://github.com/tesseract-ocr/tesseract)
+### [tessaract](https://github.com/tesseract-ocr/tesseract)
+
+- [The Mannheim University Library](https://github.com/UB-Mannheim/tesseract/wiki) が用意したexeファイルで入れる
+  - [https://github.com/tesseract-ocr/tessdata] から日本語の学習済みデータをダウンロードする
+  - ダウンロードしたデータを tessaract の tessdata に入れる
+  - 例: C:\Users\<username>\AppData\Local\Programs\Tesseract-OCR\tessdata
+  - Tesseract-OCR にパスを通す
 
 ## Author
 
