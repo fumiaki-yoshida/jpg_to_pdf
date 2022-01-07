@@ -12,8 +12,10 @@ import re
 import shutil
 
 def imgfile_to_pdf(img_file):
+    # gray = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
     pdf = pytesseract.image_to_pdf_or_hocr(img_file,
                                     lang="jpn",
+                                    config="language_model_penalty_non_dict_word=0.3",
                                     extension='pdf'
                                     )
     root, ext = os.path.splitext(img_file)
