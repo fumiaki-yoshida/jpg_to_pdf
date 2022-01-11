@@ -1,5 +1,6 @@
 import os
 from glob import glob
+import re
 
 import PyPDF2
 import pytesseract
@@ -78,11 +79,15 @@ for jpg_file in tqdm(jpg_files):
     text = extract_text(pdf_name).replace(" ", "")
     text_list.append(text)
 
+code_regex = re.compile('[!"#$%&\'\\\\()*+,-./:;<=>?@[\\]^_`{|}~「」〔〕“”〈〉『』【】＆＊・（）＄＃＠。、？！｀＋￥％]')
+
 text_pdf = make_text_pdf(folder=folder, text_list=text_list)
 pdfs.append(text_pdf)
 merger.append(text_pdf)
 merged_name = extract_text(pdfs[0])
 merged_name = merged_name.split("\n")[0]
+merged_name = merged_name.replace(" ", "")
+merged_name = code_regex.sub('', merged_name)
 if os.path.exists(f"{merged_name}.pdf"):
     print("Failure !!: Cannot save the same file name !")
     merger.close()
