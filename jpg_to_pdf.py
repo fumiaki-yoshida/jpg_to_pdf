@@ -66,35 +66,40 @@ def make_text_pdf(folder, text_list):
     doc.multiBuild(flowables)
     return file_path
 
+def jpg_to_pdf(jpg_files):
+    merger = PyPDF2.PdfFileMerger()
+    pdfs = []
+    text_list = []
+    for jpg_file in tqdm(jpg_files):
+        pdf_name = imgfile_to_pdf(jpg_file)
+        merger.append(pdf_name)
+        pdfs.append(pdf_name)
+        text = extract_text(pdf_name).replace(" ", "")
+        text = text.replace("<","")
+        text = text.replace(">","")
+        text_list.append(text)
+
+    code_regex = re.compile('[!"#$%&\'\\\\()*+,-./:;<=>?@[\\]^_`{|}~「」〔〕“”〈〉『』【】＆＊・（）＄＃＠。、？！｀＋￥％]')
+
+    text_pdf = make_text_pdf(folder=folder, text_list=text_list)
+    pdfs.append(text_pdf)
+    merger.append(text_pdf)
+    merged_name = extract_text(pdfs[0])
+    merged_name = merged_name.split("\n")[0]
+    merged_name = merged_name.replace(" ", "")
+    merged_name = code_regex.sub('', merged_name)
+    if os.path.exists(f"{merged_name}.pdf"):
+        print("Failure !!: Cannot save the same file name !")
+        merger.close()
+        for pdf_file in pdfs:
+            os.remove(pdf_file)
+    else:
+        merger.write(f"{merged_name}.pdf")
+        merger.close()
+        for pdf_file in pdfs:
+            os.remove(pdf_file)
+
 
 folder = input("input scaned_file folder: ")
 jpg_files = get_jpg_files(folder)
-merger = PyPDF2.PdfFileMerger()
-pdfs = []
-text_list = []
-for jpg_file in tqdm(jpg_files):
-    pdf_name = imgfile_to_pdf(jpg_file)
-    merger.append(pdf_name)
-    pdfs.append(pdf_name)
-    text = extract_text(pdf_name).replace(" ", "")
-    text_list.append(text)
-
-code_regex = re.compile('[!"#$%&\'\\\\()*+,-./:;<=>?@[\\]^_`{|}~「」〔〕“”〈〉『』【】＆＊・（）＄＃＠。、？！｀＋￥％]')
-
-text_pdf = make_text_pdf(folder=folder, text_list=text_list)
-pdfs.append(text_pdf)
-merger.append(text_pdf)
-merged_name = extract_text(pdfs[0])
-merged_name = merged_name.split("\n")[0]
-merged_name = merged_name.replace(" ", "")
-merged_name = code_regex.sub('', merged_name)
-if os.path.exists(f"{merged_name}.pdf"):
-    print("Failure !!: Cannot save the same file name !")
-    merger.close()
-    for pdf_file in pdfs:
-        os.remove(pdf_file)
-else:
-    merger.write(f"{merged_name}.pdf")
-    merger.close()
-    for pdf_file in pdfs:
-        os.remove(pdf_file)
+jpg_to_pdf(jpg_files=jpg_files)
